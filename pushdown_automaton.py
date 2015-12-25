@@ -68,13 +68,32 @@ class PushdownAutomaton:
                     print('\t\tTo state:', new_state)
                     print('\t\tTo stack:', new_stack)
 
+    class State:
+        def __init__(self, state_id, stack, input_str):
+            self.state_id = state_id
+            self.stack = stack
+            self.input_str = input_str
 
 
+    @staticmethod
+    def __is_rule_applicable(rule, state):
+        if state.state_id != rule[0][0]:
+            return False
+
+        if state.stack[-1] != rule[0][2]:
+            return False
+
+        if state.input_str[0] != rule[0][1]:
+            return False
+
+        return True
 
 
+    def simulate(self, input_string):
+        states = [ State(self.__start_state, [self.__start_stack], input_str) ]
 
-
-
-
-
- 
+        while states:
+            curr_state = states.pop(0)
+            for rule in self.__rules.items():
+                if __is_rule_applicable(rule, curr_state):
+                    states.append(__apply_rule(rule, curr_state))
